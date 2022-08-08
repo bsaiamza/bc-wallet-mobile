@@ -9,7 +9,7 @@ import { LocalStorageKeys, StoreContext } from "aries-bifold";
 import { DispatchAction } from "aries-bifold";
 import { Assets, ColorPallet } from "../theme";
 import { AuthenticateStackParams, Screens } from "aries-bifold";
-import { OnboardingState } from "aries-bifold";
+import { OnboardingState, PrivacyState } from "aries-bifold";
 
 const styles = StyleSheet.create({
   container: {
@@ -55,11 +55,26 @@ const Splash: React.FC = () => {
   useMemo(() => {
     async function init() {
       try {
-        // await AsyncStorage.removeItem(LocalStorageKeys.Onboarding)
-        const data = await AsyncStorage.getItem(LocalStorageKeys.Onboarding);
+        const privacyData = await AsyncStorage.getItem(
+          LocalStorageKeys.Privacy
+        );
 
-        if (data) {
-          const dataAsJSON = JSON.parse(data) as OnboardingState;
+        if (privacyData) {
+          const dataAsJSON = JSON.parse(privacyData) as PrivacyState;
+
+          dispatch({
+            type: DispatchAction.PRIVACY_UPDATED,
+            payload: [dataAsJSON],
+          });
+        }
+
+        // await AsyncStorage.removeItem(LocalStorageKeys.Onboarding)
+        const onboardingData = await AsyncStorage.getItem(
+          LocalStorageKeys.Onboarding
+        );
+
+        if (onboardingData) {
+          const dataAsJSON = JSON.parse(onboardingData) as OnboardingState;
           dispatch({
             type: DispatchAction.ONBOARDING_UPDATED,
             payload: [dataAsJSON],
