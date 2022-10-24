@@ -26,7 +26,6 @@ yarn.lock
 
 # aries-bifold should be cloned separately
 aries-bifold/
-storybook/
 *.code-workspace
 
 # 3rd-party

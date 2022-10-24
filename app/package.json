@@ -20,7 +20,9 @@
     "postinstall:patch": "npx patch-package",
     "postinstall": "run-s postinstall:copy-patches postinstall:patch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --ignore-path .gitignore '**/*.+(js|jsx|json|ts|tsx|md|yml|yaml)'"
+    "prettier": "prettier --ignore-path .gitignore '**/*.+(js|jsx|json|ts|tsx|md|yml|yaml)'",
+    "storybook": "start-storybook -p 7007",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
@@ -96,6 +98,13 @@
     "@babel/core": "7.15.5",
     "@babel/runtime": "7.15.4",
     "@react-native-community/eslint-config": "^2.0.0",
+    "@storybook/addon-actions": "^5.3.21",
+    "@storybook/addon-knobs": "^5.3.21",
+    "@storybook/addon-links": "^5.3.21",
+    "@storybook/addon-ondevice-actions": "^5.3.23",
+    "@storybook/addon-ondevice-knobs": "^5.3.26",
+    "@storybook/react-native": "^5.3.25",
+    "@storybook/react-native-server": "^5.3.23",
     "@types/lodash.flatten": "^4.4.6",
     "@types/lodash.merge": "^4.6.6",
     "@types/lodash.startcase": "^4.4.6",
@@ -112,6 +121,7 @@
     "metro-react-native-babel-preset": "0.66.2",
     "patch-package": "^6.4.7",
     "prettier": "^2.1.2",
+    "react-dom": "^17.0.2",
     "react-native-svg-transformer": "0.14.3",
     "run-s": "^0.0.0",
     "typescript": "4.4.3"
