@@ -1,37 +1,47 @@
 import { StackScreenProps } from '@react-navigation/stack'
+import { useConfiguration, useTheme, useStore } from 'aries-bifold'
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SectionList, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-import { getVersion, getBuildNumber } from 'react-native-device-info'
+import { Modal, SectionList, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
-import { useConfiguration } from '../contexts/configuration'
-import { DispatchAction } from '../contexts/reducers/store'
-import { useStore } from '../contexts/store'
-import { useTheme } from '../contexts/theme'
-import { Locales } from '../localization'
-import { GenericFn } from '../types/fn'
-import { Screens, SettingStackParams, Stacks } from '../types/navigators'
-import { SettingSection } from '../types/settings'
-import { testIdWithKey } from '../utils/testable'
+// import { useConfiguration } from '../contexts/configuration'
+// import { DispatchAction } from '../contexts/reducers/store'
+// import { useStore } from '../contexts/store'
+// import { useTheme } from '../contexts/theme'
+// import { Locales } from '../localization'
+// import { GenericFn } from '../types/fn'
+// import { Screens, SettingStackParams, Stacks } from '../types/navigators'
+// import { SettingSection } from '../types/settings'
+// import { testIdWithKey } from '../utils/testable'
 
-type SettingsProps = StackScreenProps<SettingStackParams>
+// type SettingsProps = StackScreenProps<SettingStackParams>
+interface DeveloperProps {
+  navigation: any
+}
 
-const touchCountToEnableBiometrics = 9
+interface Setting {
+  title: string
+  value?: string
+  onPress?: () => void
+  accessibilityLabel?: string
+  testID?: string
+}
 
-const Settings: React.FC<SettingsProps> = ({ navigation }) => {
-  const { t, i18n } = useTranslation()
+interface SettingSection {
+  header: {
+    title: string
+    icon: string
+  }
+  data: Setting[]
+}
+
+const Settings: React.FC<DeveloperProps> = ({ navigation }) => {
+  const { t } = useTranslation()
   const [store, dispatch] = useStore()
-  const developerOptionCount = useRef(0)
-  const [developerModeTriggerDisabled, setDeveloperModeTriggerDisabled] = useState<boolean>(false)
-  const { SettingsTheme, TextTheme, ColorPallet, Assets } = useTheme()
-  const { settings } = useConfiguration()
-  const languages = [
-    { id: Locales.en, value: t('Language.English') },
-    { id: Locales.fr, value: t('Language.French') },
-    { id: Locales.ptBr, value: t('Language.Portuguese') },
-  ]
+  const { SettingsTheme, TextTheme, ColorPallet } = useTheme()
+  // const { settings } = useConfiguration()
 
   const styles = StyleSheet.create({
     container: {
@@ -73,77 +83,23 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
     },
   })
 
-  const currentLanguage = languages.find((l) => l.id === i18n.language)?.value
-
-  const incrementDeveloperMenuCounter = () => {
-    if (developerOptionCount.current >= touchCountToEnableBiometrics) {
-      setDeveloperModeTriggerDisabled(true)
-      dispatch({
-        type: DispatchAction.ENABLE_DEVELOPER_MODE,
-        payload: [true],
-      })
-
-      return
-    }
-
-    developerOptionCount.current = developerOptionCount.current + 1
-  }
-
   const settingsSections: SettingSection[] = [
     {
       header: {
         icon: 'apartment',
-        title: t('Screens.Contacts'),
+        title: 'IAS',
       },
       data: [
         {
-          title: t('Screens.Contacts'),
-          accessibilityLabel: t('Screens.Contacts'),
-          testID: testIdWithKey('Contacts'),
-          onPress: () =>
-            navigation
-              .getParent()
-              ?.navigate(Stacks.ContactStack, { screen: Screens.Contacts, params: { navigation: navigation } }),
-        },
-        {
-          title: t('Settings.WhatAreContacts'),
-          accessibilityLabel: t('Settings.WhatAreContacts'),
-          testID: testIdWithKey('WhatAreContacts'),
-          onPress: () => null,
-          value: undefined,
+          title: 'Environment',
+          accessibilityLabel: 'Environment',
+          testID: 'xxx',
+          onPress: () => {
+            return
+          },
         },
       ],
     },
-    {
-      header: {
-        icon: 'settings',
-        title: t('Settings.AppSettings'),
-      },
-      data: [
-        {
-          title: t('Global.Biometrics'),
-          value: store.preferences.useBiometry ? t('Global.On') : t('Global.Off'),
-          accessibilityLabel: t('Global.Biometrics'),
-          testID: testIdWithKey('Biometrics'),
-          onPress: () => navigation.navigate(Screens.UseBiometry),
-        },
-        // TODO: Need to resolve methods for changing PIN
-        // {
-        //   title: t('PinCreate.ChangePIN'),
-        //   accessibilityLabel: t('PinCreate.ChangePIN'),
-        //   testID: testIdWithKey('ChangePIN'),
-        //   onPress: () => navigation.navigate(Screens.RecreatePin),
-        // },
-        {
-          title: t('Settings.Language'),
-          value: currentLanguage,
-          accessibilityLabel: t('Settings.Language'),
-          testID: testIdWithKey('Language'),
-          onPress: () => navigation.navigate(Screens.Language),
-        },
-      ],
-    },
-    ...(settings || []),
   ]
 
   if (store.preferences.developerModeEnabled) {
@@ -154,8 +110,10 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
         {
           title: t('Settings.Developer'),
           accessibilityLabel: t('Settings.Developer'),
-          testID: testIdWithKey('Developer'),
-          onPress: () => navigation.navigate(Screens.Developer),
+          testID: 'xxxx',
+          onPress: () => {
+            return
+          },
         },
       ]
     }
@@ -173,7 +131,7 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
     value?: string
     accessibilityLabel?: string
     testID?: string
-    onPress?: GenericFn
+    onPress?: () => void
   }> = ({ title, value, accessibilityLabel, testID, onPress }) => (
     <View style={[styles.section]}>
       <TouchableOpacity
@@ -191,13 +149,23 @@ const Settings: React.FC<SettingsProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView>
+      <Modal
+        visible={true}
+        transparent={true}
+        animationType={'slide'}
+        onRequestClose={() => {
+          return
+        }}
+      >
+        <View style={{ backgroundColor: 'red', flex: 1 }} />
+      </Modal>
       <View style={styles.container}>
         <SectionList
           renderItem={({ item: { title, value, onPress } }) => (
             <SectionRow
               title={title}
               accessibilityLabel={title}
-              testID={testIdWithKey(title)}
+              // testID={testIdWithKey(title)}
               value={value}
               onPress={onPress}
             />
